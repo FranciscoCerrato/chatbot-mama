@@ -7,6 +7,7 @@
   <style>
     :root {
       --morado: #7c59a4;
+      --morado-oscuro: #6a4994;
       --fondo: #ffffff;
       --texto: #1e1e1e;
       --borde: #e3e3e3;
@@ -23,13 +24,12 @@
       justify-content: space-between;
     }
 
-    /* Cabecera morada superior */
+    /* Cabecera morada con degradado y sombra */
     .header {
-      height: 55px;
-      background: var(--morado);
-      border-bottom: 2px solid #6a4994;
-      border-radius: 0 0 16px 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      height: 60px;
+      background: linear-gradient(180deg, var(--morado) 0%, var(--morado-oscuro) 100%);
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       flex-shrink: 0;
     }
 
@@ -78,6 +78,7 @@
       border-top: 1px solid var(--borde);
       padding: 12px;
       background: #fff;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
     }
 
     input {
@@ -98,9 +99,10 @@
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s ease;
+      box-shadow: 0 3px 8px rgba(124, 89, 164, 0.3);
     }
 
-    button:hover { opacity: 0.9; }
+    button:hover { opacity: 0.9; transform: scale(1.03); }
   </style>
 </head>
 <body>
