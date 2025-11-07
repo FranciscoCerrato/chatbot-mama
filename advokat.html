@@ -6,7 +6,7 @@
   <title>Chatbot IA</title>
   <style>
     :root {
-      --morado: #7c59a4; /* Color corporativo */
+      --morado: #7c59a4;
       --fondo: #ffffff;
       --texto: #1e1e1e;
       --borde: #e3e3e3;
@@ -131,7 +131,6 @@
       }
     }
 
-    // ✅ Versión definitiva de sendMessage con soporte para texto plano + depuración
     async function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
@@ -142,38 +141,29 @@
       try {
         const res = await fetch(WEBHOOK, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          mode: "cors", // 👈 fuerza CORS
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "text/plain, application/json, */*"
+          },
           body: JSON.stringify({ message: text })
         });
 
-        // 🔍 Logs de depuración
         console.log("Código de estado:", res.status);
         console.log("Tipo de contenido:", res.headers.get("content-type"));
-        const rawText = await res.clone().text();
-        console.log("Texto recibido:", rawText);
 
-        // Detección automática del tipo de respuesta
-        const contentType = res.headers.get("content-type") || "";
-        let replyText = "";
+        if (!res.ok) throw new Error("Error HTTP " + res.status);
 
-        if (contentType.includes("application/json")) {
-          try {
-            const data = JSON.parse(rawText);
-            replyText = data.reply || data.text || data.message || JSON.stringify(data);
-          } catch (e) {
-            replyText = rawText;
-          }
-        } else {
-          replyText = rawText;
-        }
+        const replyText = (await res.text()).trim();
+        console.log("Texto recibido:", replyText);
 
         typing.remove();
-        addBubble(replyText || "Sin respuesta del servidor.", "bot", true);
+        addBubble(replyText || "(sin texto recibido)", "bot", true);
 
       } catch (err) {
+        console.error("Error al conectar con el servidor:", err);
         typing.remove();
-        addBubble("Error de conexión con el servidor.", "bot");
-        console.error("Error de conexión:", err);
+        addBubble("⚠️ Error al conectar con el servidor o CORS bloqueado.", "bot");
       }
     }
 
