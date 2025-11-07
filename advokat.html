@@ -131,7 +131,7 @@
       }
     }
 
-    // ✅ Función corregida para respuestas en texto plano
+    // ✅ Nueva versión compatible con texto plano y JSON
     async function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
@@ -146,9 +146,19 @@
           body: JSON.stringify({ message: text })
         });
 
-        const raw = await res.text(); // 🔥 Recoge texto plano
+        // Detectar si la respuesta es JSON o texto
+        const contentType = res.headers.get("content-type") || "";
+        let replyText = "";
+
+        if (contentType.includes("application/json")) {
+          const data = await res.json();
+          replyText = data.reply || data.text || data.message || JSON.stringify(data);
+        } else {
+          replyText = await res.text(); // 🔥 Aquí ya lee text/plain perfectamente
+        }
+
         typing.remove();
-        addBubble(raw || "Sin respuesta del servidor.", "bot", true);
+        addBubble(replyText || "Sin respuesta del servidor.", "bot", true);
 
       } catch (err) {
         typing.remove();
