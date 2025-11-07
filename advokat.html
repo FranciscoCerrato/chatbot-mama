@@ -23,6 +23,16 @@
       justify-content: space-between;
     }
 
+    /* Cabecera morada superior */
+    .header {
+      height: 55px;
+      background: var(--morado);
+      border-bottom: 2px solid #6a4994;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+
     .chat {
       flex: 1;
       display: flex;
@@ -94,6 +104,10 @@
   </style>
 </head>
 <body>
+
+  <!-- Cabecera decorativa -->
+  <div class="header"></div>
+
   <div class="chat" id="messages"></div>
 
   <div class="input-box">
