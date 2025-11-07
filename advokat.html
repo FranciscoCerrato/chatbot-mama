@@ -105,7 +105,7 @@
     const chat = document.getElementById("chat");
     const input = document.getElementById("msg");
     const send = document.getElementById("send");
-    const WEBHOOK = "https://n8n-n8n.dts4ar.easypanel.host/webhook-test/3879389e-9d57-4198-a403-c95b42860834";
+    const WEBHOOK = "https://n8n-n8n.dts4ar.easypanel.host/webhook/3879389e-9d57-4198-a403-c95b42860834";
 
     function addBubble(text, from = "bot", typing = false) {
       const div = document.createElement("div");
@@ -131,7 +131,7 @@
       }
     }
 
-    // ✅ Nueva versión compatible con texto plano y JSON
+    // ✅ Versión definitiva de sendMessage con soporte para texto plano + depuración
     async function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
@@ -146,15 +146,25 @@
           body: JSON.stringify({ message: text })
         });
 
-        // Detectar si la respuesta es JSON o texto
+        // 🔍 Logs de depuración
+        console.log("Código de estado:", res.status);
+        console.log("Tipo de contenido:", res.headers.get("content-type"));
+        const rawText = await res.clone().text();
+        console.log("Texto recibido:", rawText);
+
+        // Detección automática del tipo de respuesta
         const contentType = res.headers.get("content-type") || "";
         let replyText = "";
 
         if (contentType.includes("application/json")) {
-          const data = await res.json();
-          replyText = data.reply || data.text || data.message || JSON.stringify(data);
+          try {
+            const data = JSON.parse(rawText);
+            replyText = data.reply || data.text || data.message || JSON.stringify(data);
+          } catch (e) {
+            replyText = rawText;
+          }
         } else {
-          replyText = await res.text(); // 🔥 Aquí ya lee text/plain perfectamente
+          replyText = rawText;
         }
 
         typing.remove();
@@ -163,7 +173,7 @@
       } catch (err) {
         typing.remove();
         addBubble("Error de conexión con el servidor.", "bot");
-        console.error(err);
+        console.error("Error de conexión:", err);
       }
     }
 
