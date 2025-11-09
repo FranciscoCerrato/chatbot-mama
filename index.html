@@ -40,6 +40,23 @@
       overflow-y: auto;
       gap: 10px;
       scroll-behavior: smooth;
+      position: relative;
+    }
+
+    /* 💧 Marca de agua */
+    .chat::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      background: url('https://raw.githubusercontent.com/FranciscoCerrato/chatbot-mama/main/LOGO%20SIN%20FONDO.png') center center no-repeat;
+      background-size: contain;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .bubble {
@@ -51,6 +68,7 @@
       animation: fadeIn 0.3s ease forwards;
       opacity: 0;
       transform: translateY(10px);
+      z-index: 1;
     }
 
     @keyframes fadeIn {
@@ -78,6 +96,8 @@
       padding: 12px;
       background: #fff;
       box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+      flex-shrink: 0;
+      z-index: 2;
     }
 
     input {
