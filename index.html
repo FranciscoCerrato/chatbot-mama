@@ -167,23 +167,23 @@
     const inputEl = document.getElementById("prompt");
     const sendBtn = document.getElementById("send");
 
-    // 🧭 Nuevo control preciso de autoscroll
-    let userScrolling = false;
-    let autoScrollEnabled = true;
+   // 🟣 Control fluido de autoscroll
+let userScrolling = false;
+let autoScrollEnabled = true;
 
-    messagesEl.addEventListener("scroll", () => {
-      const nearBottom =
-        messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 80;
+messagesEl.addEventListener("scroll", () => {
+  const nearBottom =
+    messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 80;
+  autoScrollEnabled = nearBottom;
+  userScrolling = !nearBottom;
+});
 
-      autoScrollEnabled = nearBottom;
-      userScrolling = !nearBottom;
-    });
-
-    function scrollToEnd(force = false) {
-      if (autoScrollEnabled || force) {
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      }
-    }
+function scrollToEnd(force = false) {
+  // Scroll inmediato si el usuario está abajo o si se fuerza
+  if (autoScrollEnabled || force) {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+}
 
     const sessionId = (() => {
       const key = "chat_session";
