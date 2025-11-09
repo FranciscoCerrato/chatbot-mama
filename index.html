@@ -30,7 +30,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    /* ✅ Cabecera más fina y con esquinas rectas */
     .header {
       height: 30px;
       background: linear-gradient(180deg, var(--morado) 0%, var(--morado-oscuro) 100%);
@@ -50,7 +49,6 @@
       position: relative;
     }
 
-    /* 💧 Marca de agua */
     .chat::before {
       content: "";
       position: absolute;
@@ -143,7 +141,7 @@
   </div>
 
   <script>
-    // 🔧 Ajuste dinámico del viewport real en móviles
+    // Ajuste dinámico del viewport real en móviles
     function setRealVH() {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -155,6 +153,25 @@
     const messagesEl = document.getElementById("messages");
     const inputEl = document.getElementById("prompt");
     const sendBtn = document.getElementById("send");
+
+    let autoScroll = true;
+
+    // Detectar si el usuario hace scroll manual
+    messagesEl.addEventListener("scroll", () => {
+      const isAtBottom = messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight - 50;
+      autoScroll = isAtBottom; // Solo autoscroll si está casi al final
+    });
+
+    function scrollToEnd(force = false) {
+      if (autoScroll || force) {
+        setTimeout(() => {
+          messagesEl.scrollTo({
+            top: messagesEl.scrollHeight,
+            behavior: "smooth"
+          });
+        }, 100);
+      }
+    }
 
     const sessionId = (() => {
       const key = "chat_session";
@@ -168,16 +185,7 @@
 
     const history = [];
 
-    function scrollToEnd() {
-      setTimeout(() => {
-        messagesEl.scrollTo({
-          top: messagesEl.scrollHeight,
-          behavior: "smooth"
-        });
-      }, 100);
-    }
-
-    // ✅ Mantiene saltos de párrafo y formato
+    // Añadir burbujas con formato
     function addBubble(text, from = "bot", typingEffect = false) {
       const div = document.createElement("div");
       div.className = `bubble ${from === "user" ? "user" : "bot"}`;
@@ -206,6 +214,7 @@
           .replace(/\\n/g, "<br>")
           .replace(/\n/g, "<br>")
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        scrollToEnd();
       }
       return div;
     }
